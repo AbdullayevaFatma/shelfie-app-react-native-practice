@@ -1,5 +1,5 @@
 export const Colors = {
-  primary: "#6849a7",
+  primary: "#F38A26",
   warning: "#cc475a",
   
   dark: {
@@ -12,12 +12,12 @@ export const Colors = {
     uiBackground: "#2f2b3d",
   },
   light: {
-    text: "#625f72",
+    text: "#4A3A24",
     title: "#201e2b",
-    background: "#ffffff",
-    navBackground: "#e8e7ef",
+    background: "#fef2db",
+    navBackground: "#F38A26",
     iconColor: "#686477",
     iconColorFocused: "#201e2b",
-    uiBackground: "#d6d5e1",
+    uiBackground: "#ffebc9",
   },
 }

@@ -8,11 +8,8 @@ export default function AuthLayout() {
       <StatusBar value="auto" />
       <Stack screenOptions={{
        headerShown: false,animation: "none"
-      }}>
-        {/* Individual Screens */}
-        <Stack.Screen name="index" options={{ title: "Home" }} />
-        
-      </Stack>
+      }}/>
+      
     </>
   )
 }

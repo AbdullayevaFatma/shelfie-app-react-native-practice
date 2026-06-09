@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Text } from "react-native";
-import Logo from "../assets/shelfie.webp";
+import Logo from "../assets/logo.png";
 import { Link } from "expo-router";
 import ThemedView from "../components/ThemedView";
 import Spacer from "../components/Spacer";
@@ -21,6 +21,9 @@ const Home = () => {
       </Link>
       <Link href="/register" style={styles.link}>
         <ThemedText>Register Page</ThemedText>{" "}
+      </Link>
+      <Link href="/profile" style={styles.link}>
+        <ThemedText>Profile Page</ThemedText>{" "}
       </Link>
     </ThemedView>
   );
