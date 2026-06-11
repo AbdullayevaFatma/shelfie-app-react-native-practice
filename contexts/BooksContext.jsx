@@ -29,15 +29,19 @@ export function BooksProvider({children}) {
   }
 }
 
-  async function fetchBookById(id) {
-    try {
+async function fetchBookById(id) {
+  try {
+    const response = await tablesDB.getRow({
+      databaseId: DATABASE_ID,
+      tableId: TABLE_ID,
+      rowId: id,
+    });
 
-  
-      return response 
-    } catch (error) {
-      console.log(error.message)
-    }
+    return response;
+  } catch (error) {
+    console.log(error.message);
   }
+}
 
 async function createBook(data) {
   try {
