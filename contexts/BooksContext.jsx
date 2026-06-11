@@ -65,13 +65,19 @@ async function createBook(data) {
   }
 }
 
-  async function deleteBook(id) {
-    try {
-      
-    } catch (error) {
-      console.log(error.message)
-    }
+async function deleteBook(id) {
+  try {
+    await tablesDB.deleteRow({
+      databaseId: DATABASE_ID,
+      tableId: TABLE_ID,
+      rowId: id,
+    });
+
+    await fetchBooks();
+  } catch (error) {
+    console.log(error.message);
   }
+}
 
 
 useEffect(() => {
