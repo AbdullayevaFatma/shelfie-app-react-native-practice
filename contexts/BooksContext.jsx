@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react"
-import { databases, tablesDB } from "../lib/appwrite";
+import { databases, tablesDB, client } from "../lib/appwrite";
 import { ID, Permission, Query, Role, TablesDB } from "react-native-appwrite";
 import { useUser } from "../hooks/useUser";
 
@@ -55,6 +55,7 @@ async function createBook(data) {
         Permission.delete(Role.user(user.$id)),
       ],
     });
+    await fetchBooks()
   } catch (error) {
     console.log(error.message);
   }
@@ -69,15 +70,14 @@ async function createBook(data) {
   }
 
 
-  useEffect(() => {
+useEffect(() => {
+  if (!user) {
+    setBooks([]);
+    return;
+  }
 
-    if (user) {
-      fetchBooks()
-    } else {
-      setBooks([])
-    }
-
-  }, [user])
+  fetchBooks();
+}, [user]);
 
   return (
     <BooksContext.Provider 
