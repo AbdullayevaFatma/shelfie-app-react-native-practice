@@ -1,45 +1,58 @@
-import { StyleSheet, FlatList, Pressable } from 'react-native'
-import { useBooks } from '../../hooks/useBooks'
-import { Colors } from '../../constants/Colors'
+import { StyleSheet, FlatList, Pressable, Image } from "react-native";
+import { useBooks } from "../../hooks/useBooks";
+import { Colors } from "../../constants/Colors";
 
-import Spacer from "../../components/Spacer"
-import ThemedText from "../../components/ThemedText"
-import ThemedView from "../../components/ThemedView"
-import ThemedCard from "../../components/ThemedCard"
-import { useRouter } from 'expo-router'
+import Spacer from "../../components/Spacer";
+import ThemedText from "../../components/ThemedText";
+import ThemedView from "../../components/ThemedView";
+import ThemedCard from "../../components/ThemedCard";
+import { useRouter } from "expo-router";
+import DefaultBookCover from "../../assets/default-book-image.png";
 
 const Books = () => {
-  const { books } = useBooks()
-  const router = useRouter()
+  const { books } = useBooks();
+  const router = useRouter();
 
   return (
     <ThemedView style={styles.container} safe={true}>
-
       <Spacer />
       <ThemedText title={true} style={styles.heading}>
         Your Reading List
       </ThemedText>
 
-      
       <FlatList
         data={books}
         keyExtractor={(item) => item.$id}
         contentContainerStyle={styles.list}
         renderItem={({ item }) => (
-          <Pressable onPress={()=>router.push(`/books/${item.$id}`)}>
+          <Pressable onPress={() => router.push(`/books/${item.$id}`)}>
             <ThemedCard style={styles.card}>
+              {item.coverImageId ? (
+                <Image
+                  source={{
+                    uri: `${process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${process.env.EXPO_PUBLIC_BUCKET_ID}/files/${item.coverImageId}/view?project=${process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID}`,
+                  }}
+                  style={{
+                    width: "100%",
+                    height: 180,
+                    borderRadius: 8,
+                    marginBottom: 10,
+                  }}
+                />
+              ) : (
+                <Image source={DefaultBookCover} style={styles.defaultImage} />
+              )}
               <ThemedText style={styles.title}>{item.title}</ThemedText>
               <ThemedText>Written by {item.author}</ThemedText>
             </ThemedCard>
           </Pressable>
         )}
       />
-
     </ThemedView>
-  )
-}
+  );
+};
 
-export default Books
+export default Books;
 
 const styles = StyleSheet.create({
   container: {
@@ -52,7 +65,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   list: {
-    marginTop: 40
+    marginTop: 40,
   },
   card: {
     width: "90%",
@@ -61,11 +74,26 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingLeft: 14,
     borderLeftColor: Colors.primary,
-    borderLeftWidth: 4
+    borderLeftWidth: 4,
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 10,
   },
-})
+ defaultImage: {
+  width: "100%",
+  height: 180,
+  borderRadius: 8,
+  marginBottom: 10,
+  resizeMode: "cover",
+  backgroundColor: "#eee",
+},
+  image: {
+    width: "100%",
+    height: 180,
+    borderRadius: 8,
+    marginBottom: 10,
+    resizeMode: "cover",
+  },
+});
