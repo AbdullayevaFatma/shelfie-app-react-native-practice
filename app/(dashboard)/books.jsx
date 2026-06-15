@@ -40,6 +40,10 @@ if (books.length === 0) {
       <FlatList
         data={books}
         keyExtractor={(item) => item.$id}
+        removeClippedSubviews
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={5}
         contentContainerStyle={styles.list}
         renderItem={({ item }) => (
           <Pressable onPress={() => router.push(`/books/${item.$id}`)}>

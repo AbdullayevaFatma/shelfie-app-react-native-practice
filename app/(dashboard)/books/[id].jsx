@@ -19,10 +19,26 @@ const BookDetails = () => {
   const { fetchBookById, deleteBook } = useBooks();
   const router = useRouter();
   const handleDelete = async () => {
+  try {
     await deleteBook(id);
+
     setBook(null);
+
+    Toast.show({
+      type: "success",
+      text1: "Deleted",
+      text2: "Book removed successfully",
+    });
+
     router.replace("/books");
-  };
+  } catch (error) {
+    Toast.show({
+      type: "error",
+      text1: "Error",
+      text2: error.message,
+    });
+  }
+};
 
 useFocusEffect(
   useCallback(() => {
