@@ -8,10 +8,25 @@ import ThemedView from "../../components/ThemedView";
 import ThemedCard from "../../components/ThemedCard";
 import { useRouter } from "expo-router";
 import DefaultBookCover from "../../assets/default-book-image.png";
+import { getBookCoverUrl } from "../../lib/utils/storage";
 
 const Books = () => {
   const { books } = useBooks();
   const router = useRouter();
+
+if (books.length === 0) {
+  return (
+    <ThemedView style={styles.emptyContainer} safe={true}>
+      <ThemedText style={{ fontSize: 20, fontWeight: "bold" }}>
+        No books yet
+      </ThemedText>
+
+      <ThemedText style={{ textAlign: "center", marginTop: 8 }}>
+        Tap Create to add your first book.
+      </ThemedText>
+    </ThemedView>
+  );
+}
 
   return (
     <ThemedView style={styles.container} safe={true}>
@@ -19,6 +34,8 @@ const Books = () => {
       <ThemedText title={true} style={styles.heading}>
         Your Reading List
       </ThemedText>
+  
+      
 
       <FlatList
         data={books}
@@ -30,7 +47,7 @@ const Books = () => {
               {item.coverImageId ? (
                 <Image
                   source={{
-                    uri: `${process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${process.env.EXPO_PUBLIC_BUCKET_ID}/files/${item.coverImageId}/view?project=${process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID}`,
+                    uri: getBookCoverUrl(item.coverImageId)
                   }}
                   style={{
                     width: "100%",
@@ -96,4 +113,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     resizeMode: "cover",
   },
+  emptyContainer: {
+  flex: 1,
+  justifyContent: "center",
+  alignItems: "center",
+  paddingHorizontal: 20,
+},
 });

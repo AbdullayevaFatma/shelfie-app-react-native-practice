@@ -8,8 +8,9 @@ import ThemedButton from "../../../components/ThemedButton";
 import ThemedView from "../../../components/ThemedView";
 import Spacer from "../../../components/Spacer";
 import ThemedCard from "../../../components/ThemedCard";
-import ThemedLoader from "../../../components/ThemedCard";
+import ThemedLoader from "../../../components/ThemedLoader";
 import { Colors } from "../../../constants/Colors";
+import { getBookCoverUrl } from "../../../lib/utils/storage";
 
 const BookDetails = () => {
   const [book, setBook] = useState(null);
@@ -48,7 +49,7 @@ useFocusEffect(
         {book.coverImageId && (
           <Image
             source={{
-              uri: `${process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${process.env.EXPO_PUBLIC_BUCKET_ID}/files/${book.coverImageId}/view?project=${process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID}`,
+              uri: getBookCoverUrl(book.coverImageId)
             }}
             style={styles.coverImage}
           />

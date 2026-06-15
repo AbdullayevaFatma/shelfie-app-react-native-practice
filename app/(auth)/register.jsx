@@ -9,6 +9,7 @@ import { useState } from "react";
 import { TouchableWithoutFeedback } from "react-native";
 import { useUser } from "../../hooks/useUser";
 import { Colors } from "../../constants/Colors";
+import { validateEmail, validatePassword } from "../../lib/utils/validation";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -19,11 +20,24 @@ const Register = () => {
 
   const handleSubmit = async () => {
     setError(null);
+
+    if (!email.trim() && !password.trim()) {
+      return setError("Email and password are required");
+    }
+
+    if (!validateEmail(email)) {
+      return setError("Invalid email address");
+    }
+    if (!validatePassword(password)) {
+      return setError(
+        "Password must be at least 8 characters and include uppercase, lowercase, number and special character (@$!%*?&)",
+      );
+    }
+
     try {
       await register(email, password);
-      console.log("register form submitted", email, password);
     } catch (error) {
-      setError(error.message);
+      setError(error instanceof Error ? error.message : "Registration failed");
     }
   };
   return (

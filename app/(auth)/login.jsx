@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextInput } from "react-native";
+import { StyleSheet, Text, TextInput, TouchableWithoutFeedback } from "react-native";
 import ThemedView from "../../components/ThemedView";
 import Spacer from "../../components/Spacer";
 import ThemedText from "../../components/ThemedText";
@@ -8,6 +8,7 @@ import ThemedTextInput from "../../components/ThemedTextInput";
 import { useState } from "react";
 import { useUser } from "../../hooks/useUser";
 import { Colors } from "../../constants/Colors";
+import { validateEmail } from "../../lib/utils/validation";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -18,14 +19,24 @@ const Login = () => {
 
   const handleSubmit = async () => {
     setError(null);
+
+    if (!email.trim() || !password.trim()) {
+      return setError("Email and password are required");
+    }
+
+    if (!validateEmail(email)) {
+      return setError("Invalid email address");
+    }
+
     try {
       await login(email, password);
     } catch (error) {
-      setError(error.message);
+      setError(error instanceof Error ? error.message : "Login failed");
     }
   };
 
   return (
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <ThemedView style={styles.container}>
       <Spacer />
       <ThemedText title={true} style={styles.title}>
@@ -57,8 +68,8 @@ const Login = () => {
           Register instead
         </ThemedText>
       </Link>
-      
     </ThemedView>
+    </TouchableWithoutFeedback>
   );
 };
 
