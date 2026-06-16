@@ -24,25 +24,30 @@ export function BooksProvider({ children }) {
       });
 
       setBooks(response.rows);
-      console.log(response.rows);
     } catch (error) {
-      console.error(error.message);
+      throw new Error(error.message);
     }
   }
 
-  async function fetchBookById(id) {
-    try {
-      const response = await tablesDB.getRow({
-        databaseId: DATABASE_ID,
-        tableId: TABLE_ID,
-        rowId: id,
-      });
+async function fetchBookById(id) {
+  try {
+    const response = await tablesDB.getRow({
+      databaseId: DATABASE_ID,
+      tableId: TABLE_ID,
+      rowId: id,
+    });
 
-      return response;
-    } catch (error) {
-      console.log(error.message);
+    return response;
+  } catch (error) {
+    if (error?.code === 404) {
+      return null;
     }
+
+    throw new Error(
+      error instanceof Error ? error.message : "Failed to fetch book"
+    );
   }
+}
 
   async function uploadImage(imageUri) {
     if (!imageUri) return null;
@@ -65,7 +70,6 @@ export function BooksProvider({ children }) {
 
       return uploaded.$id;
     } catch (error) {
-      console.log("UPLOAD ERROR:", error);
       return null;
     }
   }
@@ -76,8 +80,6 @@ export function BooksProvider({ children }) {
       if (data.coverImage) {
         coverImageId = await uploadImage(data.coverImage);
       }
-      console.log("coverImage:", data.coverImage);
-      console.log("uploaded coverImageId:", coverImageId);
 
       const payload = {
         title: data.title,
@@ -101,7 +103,7 @@ export function BooksProvider({ children }) {
 
       await fetchBooks();
     } catch (error) {
-      console.log(error.message);
+      throw new Error(error.message);
     }
   }
 
@@ -119,7 +121,7 @@ export function BooksProvider({ children }) {
               fileId: existingBook.coverImageId,
             });
           } catch (error) {
-            console.log("DELETE IMAGE ERROR:", error);
+            throw new Error(error.message);
           }
         }
 
@@ -140,7 +142,7 @@ export function BooksProvider({ children }) {
 
       await fetchBooks();
     } catch (error) {
-      console.log("UPDATE ERROR:", error);
+      throw new Error(error.message);
     }
   }
 
@@ -163,7 +165,7 @@ export function BooksProvider({ children }) {
 
       await fetchBooks();
     } catch (error) {
-      console.log(error.message);
+     throw new Error(error.message);
     }
   }
 

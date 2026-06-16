@@ -3,7 +3,6 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  TextInput,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
@@ -18,6 +17,7 @@ import { useUser } from "../../hooks/useUser";
 import { Colors } from "../../constants/Colors";
 import { validateEmail } from "../../lib/utils/validation";
 import { Ionicons } from "@expo/vector-icons";
+import Toast from "react-native-toast-message";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -40,8 +40,19 @@ const Login = () => {
 
     try {
       await login(email, password);
+      Toast.show({
+        type: "success",
+        text1: "Welcome back",
+        text2: "You’ve successfully signed in.",
+      });
     } catch (error) {
-      setError(error instanceof Error ? error.message : "Login failed");
+      setError(null);
+
+      Toast.show({
+        type: "error",
+        text1: "Login failed",
+        text2: "Please check your credentials",
+      });
     }
   };
 
@@ -52,6 +63,7 @@ const Login = () => {
         <ThemedText title={true} style={styles.title}>
           Login to Your Account
         </ThemedText>
+
         <ThemedTextInput
           placeholder="Email"
           style={{ width: "80%", marginBottom: 20 }}
@@ -61,6 +73,7 @@ const Login = () => {
           onChangeText={setEmail}
           value={email}
         />
+
         <View
           style={{
             width: "80%",
@@ -96,13 +109,12 @@ const Login = () => {
         <ThemedButton onPress={handleSubmit}>
           <Text style={{ color: "#f2f2f2" }}>Login</Text>
         </ThemedButton>
-        <Spacer />
+        <Spacer height={10} />
         {error && <Text style={styles.error}>{error}</Text>}
-
-        <Spacer height={100} />
+        <Spacer height={10} />
         <Link href="/register">
-          <ThemedText style={{ textAlign: "center" }}>
-            Register instead
+          <ThemedText style={styles.link}>
+            Don’t have an account? Create one
           </ThemedText>
         </Link>
       </ThemedView>
@@ -113,14 +125,11 @@ const Login = () => {
 export default Login;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
+  container: { flex: 1, justifyContent: "center", alignItems: "center" },
   title: {
     textAlign: "center",
     fontSize: 18,
+    fontWeight: "600",
     marginBottom: 30,
   },
   error: {
@@ -130,6 +139,11 @@ const styles = StyleSheet.create({
     borderColor: Colors.warning,
     borderWidth: 1,
     borderRadius: 6,
-    marginHorizontal: 10,
+    marginHorizontal: 5,
+  },
+  link: {
+    marginTop: 20,
+    textAlign: "center",
+    color: Colors.primary,
   },
 });

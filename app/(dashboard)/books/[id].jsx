@@ -11,44 +11,52 @@ import ThemedCard from "../../../components/ThemedCard";
 import ThemedLoader from "../../../components/ThemedLoader";
 import { Colors } from "../../../constants/Colors";
 import { getBookCoverUrl } from "../../../lib/utils/storage";
+import Toast from "react-native-toast-message";
 
 const BookDetails = () => {
   const [book, setBook] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   const { id } = useLocalSearchParams();
+  const bookId = Array.isArray(id) ? id[0] : id;
   const { fetchBookById, deleteBook } = useBooks();
   const router = useRouter();
-  const handleDelete = async () => {
-  try {
-    await deleteBook(id);
 
-    setBook(null);
+
+  const handleDelete = async () => {
+  setDeleting(true);
+
+  try {
+    await deleteBook(bookId);
 
     Toast.show({
       type: "success",
-      text1: "Deleted",
+      text1: "Deleted 🗑️",
       text2: "Book removed successfully",
     });
+    
 
     router.replace("/books");
   } catch (error) {
     Toast.show({
       type: "error",
-      text1: "Error",
-      text2: error.message,
+      text1: "Delete failed",
+      text2: error instanceof Error ? error.message : "Try again",
     });
+  } finally {
+    setDeleting(false);
   }
 };
 
 useFocusEffect(
   useCallback(() => {
     const loadBook = async () => {
-      const bookData = await fetchBookById(id);
+      const bookData = await fetchBookById(bookId);
       setBook(bookData);
     };
 
     loadBook();
-  }, [id])
+  }, [bookId,fetchBookById])
 );
 
   if (!book) {
@@ -90,7 +98,7 @@ useFocusEffect(
           <Text style={{ color: "#fff", textAlign: "center" }}>Edit Book</Text>
         </ThemedButton>
 
-        <ThemedButton style={styles.delete} onPress={handleDelete}>
+        <ThemedButton style={styles.delete} onPress={handleDelete}  disabled={deleting}>
           <Text style={{ color: "#fff", textAlign: "center" }}>
             Delete Book
           </Text>

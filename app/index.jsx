@@ -1,30 +1,50 @@
-import { Image, StyleSheet, Text } from "react-native";
-import Logo from "../assets/logo.png";
+import { Image, StyleSheet, View } from "react-native";
 import { Link } from "expo-router";
 import ThemedView from "../components/ThemedView";
-import Spacer from "../components/Spacer";
 import ThemedText from "../components/ThemedText";
+import ThemedButton from "../components/ThemedButton";
+import Spacer from "../components/Spacer";
+
+import Logo from "../assets/logo.png";
+import { Colors } from "../constants/Colors";
+import { useUser } from "../hooks/useUser";
 
 const Home = () => {
+  const { user } = useUser();
+  const isLoggedIn = !!user;
   return (
     <ThemedView style={styles.container}>
-      <Image source={Logo} style={styles.img} />
-      <Spacer height={20} />
-      <ThemedText style={styles.title} title={true}>
-        The Number 1
-      </ThemedText>
-      <Spacer height={10} />
-      <ThemedText>Reading List App</ThemedText>
-      <Spacer />
-      <Link href="/login" style={styles.link}>
-        <ThemedText>Login Page</ThemedText>
-      </Link>
-      <Link href="/register" style={styles.link}>
-        <ThemedText>Register Page</ThemedText>{" "}
-      </Link>
-      <Link href="/profile" style={styles.link}>
-        <ThemedText>Profile Page</ThemedText>{" "}
-      </Link>
+      <View style={styles.header}>
+        <Image source={Logo} style={styles.logo} />
+
+        <ThemedText title={true} style={styles.title}>
+          Shelfie
+        </ThemedText>
+
+        <ThemedText style={styles.subtitle}>
+          Track your reading journey, organize your books, and build your habit.
+        </ThemedText>
+      </View>
+
+      <View style={styles.actions}>
+        <Link href={isLoggedIn ? "/books" : "/register"} asChild>
+          <ThemedButton>
+            <ThemedText style={styles.buttonText}>
+              {isLoggedIn ? "Go to Books" : "Get Started"}
+            </ThemedText>
+          </ThemedButton>
+        </Link>
+
+        <Spacer height={20} />
+
+        {!isLoggedIn && (
+          <Link href="/login" asChild>
+            <ThemedText style={styles.loginText}>
+              Already have an account? Login
+            </ThemedText>
+          </Link>
+        )}
+      </View>
     </ThemedView>
   );
 };
@@ -34,19 +54,45 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
     justifyContent: "center",
+    paddingHorizontal: 25,
   },
+
+  header: {
+    alignItems: "center",
+  },
+
+  logo: {
+    width: 90,
+    height: 90,
+    marginBottom: 20,
+  },
+
   title: {
+    fontSize: 28,
     fontWeight: "bold",
-    fontSize: 18,
+    marginBottom: 10,
   },
-  img: {
-    width: 100,
-    height: 70,
+
+  subtitle: {
+    textAlign: "center",
+    fontSize: 14,
+    opacity: 0.7,
+    lineHeight: 20,
   },
-  link: {
-    marginVertical: 10,
-    borderBottomWidth: 1,
+
+  actions: {
+    marginTop: 20,
+    alignItems: "center",
+  },
+
+  buttonText: {
+    color: "#fff",
+    fontWeight: "600",
+  },
+
+  loginText: {
+    color: Colors.primary,
+    fontWeight: "500",
   },
 });

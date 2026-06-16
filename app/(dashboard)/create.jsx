@@ -15,6 +15,7 @@ import ThemedText from "../../components/ThemedText";
 import ThemedTextInput from "../../components/ThemedTextInput";
 import ThemedButton from "../../components/ThemedButton";
 import Spacer from "../../components/Spacer";
+import Toast from "react-native-toast-message";
 
 const Create = () => {
   const [title, setTitle] = useState("");
@@ -44,12 +45,26 @@ const Create = () => {
     }
   };
 
-  async function handleSubmit() {
-    if (!title.trim() || !author.trim() || !description.trim()) return;
+ async function handleSubmit() {
+  if (!title.trim() || !author.trim() || !description.trim()) {
+    Toast.show({
+      type: "error",
+      text1: "Missing fields",
+      text2: "Please fill in all required fields",
+    });
+    return;
+  }
 
-    setLoading(true);
+  setLoading(true);
 
+  try {
     await createBook({ title, author, description, coverImage });
+
+    Toast.show({
+      type: "success",
+      text1: "Book created 📚",
+      text2: "Added to your list",
+    });
 
     setTitle("");
     setAuthor("");
@@ -57,9 +72,19 @@ const Create = () => {
     setCoverImage(null);
 
     router.replace("/books");
-
+  } catch (error) {
+    Toast.show({
+      type: "error",
+      text1: "Create failed",
+      text2:
+        error instanceof Error
+          ? error.message
+          : "Something went wrong. Try again.",
+    });
+  } finally {
     setLoading(false);
   }
+}
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

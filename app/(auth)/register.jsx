@@ -11,6 +11,7 @@ import { useUser } from "../../hooks/useUser";
 import { Colors } from "../../constants/Colors";
 import { validateEmail, validatePassword } from "../../lib/utils/validation";
 import { Ionicons } from "@expo/vector-icons";
+import Toast from "react-native-toast-message";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -38,8 +39,18 @@ const Register = () => {
 
     try {
       await register(email, password);
+      Toast.show({
+        type: "success",
+        text1: "Account created",
+        text2: "Welcome to Shelfie",
+      });
+      setError(null);
     } catch (error) {
-      setError(error instanceof Error ? error.message : "Registration failed");
+      Toast.show({
+        type: "error",
+        text1: "Registration failed",
+        text2: error.message || "Something went wrong",
+      });
     }
   };
   return (
@@ -87,11 +98,13 @@ const Register = () => {
         <ThemedButton onPress={handleSubmit}>
           <Text style={{ color: "#f2f2f2" }}>Register</Text>
         </ThemedButton>
-        <Spacer />
+        <Spacer height={10} />
         {error && <Text style={styles.error}>{error}</Text>}
-        <Spacer height={100} />
+        <Spacer height={10} />
         <Link href="/login">
-          <ThemedText style={{ textAlign: "center" }}>Login instead</ThemedText>
+          <ThemedText style={styles.link}>
+            Already have an account? Login
+          </ThemedText>
         </Link>
       </ThemedView>
     </TouchableWithoutFeedback>
@@ -109,6 +122,7 @@ const styles = StyleSheet.create({
   title: {
     textAlign: "center",
     fontSize: 18,
+    fontWeight: "600",
     marginBottom: 30,
   },
   error: {
@@ -119,5 +133,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 6,
     marginHorizontal: 10,
+  },
+  link: {
+    marginTop: 20,
+    textAlign: "center",
+    color: Colors.primary,
   },
 });
